@@ -512,89 +512,89 @@ Connection: close
 
 ### HTTP协议认证
 
-Options: `--auth-type`和`--auth-cred`
+选项: `--auth-type`和`--auth-cred`
 
-这些选项可用于指定哪个HTTP协议身份验证后端Web服务器实现，以及用于执行对目标应用程序的所有HTTP请求的有效凭据。
+这些选项用于指定后端Web服务器实现的HTTP协议认证以及所有向目标应用发起的HTTP请求的有效凭据。
 
-三种支持的HTTP协议认证机制有：
+三种受支持的HTTP协议认证机制：
 
 * `Basic`
 * `Digest`
 * `NTLM`
 
-认证的语法是`username：password`。
+认证凭据的语法格式是`username：password`。
 
-有效语法示例：
+正确语法示例：
 
 ```
 $ python sqlmap.py -u "http://192.168.136.131/sqlmap/mysql/basic/get_int.php?id\
 =1" --auth-type Basic --auth-cred "testuser:testpass"
 ```
 
-### HTTP protocol private key authentication
+### HTTP协议私钥认证
 
-Option: `--auth-file`
+选项: `--auth-file`
 
-在Web服务器需要适当的客户端证书和用于验证的私钥的情况下，应使用此选项。 提供的值应该是包含您的证书和私钥的PEM格式化的`key_file`。
+当Web服务器需要正确的客户端证书和私钥用于身份验证时，应使用此选项。 提供的值应包含你证书和私钥的PEM格式`key_file`。
 
 
-### Ignore HTTP error 401 (Unauthorized)
+### 忽略 HTTP error 401 （未授权)
 
-Switch `--ignore-401`
+开关 `--ignore-401`
 
-如果您想要测试该站点偶尔返回HTTP错误401（未经授权），当您想忽略它，并继续测试而不提供正确的凭据，您可以使用switch`--ignore-401`。
+如果你测试的站点偶尔返回HTTP401错误（未经授权），当你想忽略它并继续测试，而不提供正确的凭据，你可以使用开关`--ignore-401`来关闭错误题型。
 
 ### HTTP(S)代理
 
-Options and switch: `--proxy`, `--proxy-cred`, `--proxy-file` and `--ignore-proxy`
+选项和开关: `--proxy`, `--proxy-cred`, `--proxy-file`和 `--ignore-proxy`。
 
-可以提供HTTP（S）代理地址，以通过HTTP（S）请求传递给具有option`--proxy`的目标URL。 HTTP（S）代理值的语法是`http：// url：port`。
+可以通过`--proxy`选项提供HTTP（S）代理地址，使得HTTP（S）请求经代理到达目标URL。 HTTP（S）代理值的语法格式是`http：// url：port`。
 
-如果HTTP（S）代理需要身份验证，则可以以“username：password”格式提供认证option`--proxy-cred`。
+如果HTTP（S）代理需要身份验证，则可以以“username：password”的格式通过`--proxy-cred`选项提供凭证。
 
-如果您想使用（一次性）代理列表，则在连接问题的任何迹象（例如阻止侵入式IP地址）上跳过下一个代理，可以使用选项`--proxy-file`来提供文件名 包含批量代理列表的文件。
+如果您想使用（一次性）代理列表，则在有出现连接问题迹象的（例如阻止侵入式IP地址）地方个跳过并使用过下一个代理，可以通过选项`--proxy-file`来指定包含批量代理列表的文件。
 
-当您想要通过忽略全系统设置的HTTP（S）代理服务器设置对局域网的目标部分运行sqlmap时，应使用switch`--ignore-proxy`。
+当你想要使用sqlmap对局域网目标进行测试，应使用开关`--ignore-proxy`来忽视系统设的HTTP（S）代理设置，
 
-### Tor anonymity network
+### Tor 匿名网络
 
-Switches and options: `--tor`, `--tor-port`, `--tor-type` and `--check-tor`
+开关与香港香港: `--tor`, `--tor-port`, `--tor-type` and `--check-tor`
 
-如果由于任何原因，您需要匿名，而不是通过单个预定义的HTTP（S）代理服务器，您可以将[Tor客户端](http://www.torproject.org/)与[Privoxy](http://www.privoxy.org)（或类似的），如[Tor安装指南](https://www.torproject.org/docs/installguide.html.en)中所述。那么你可以使用一个switch`--tor`，而sqlmap会尝试自动设置Tor代理连接设置。
+如果你因为某些原因需要匿名，可以根据[Tor安装指南](https://www.torproject.org/docs/installguide.html.en)所述，配置[Tor客户端](http://www.torproject.org/)与[Privoxy](http://www.privoxy.org)（或类似的）进行代理，取代使用单个预定义的HTTP（S）代理服务器。使用开关`--tor`，sqlmap会尝试自动设置Tor代理连接设置。
 
 如果要手动设置Tor代理的类型和端口，可以使用`--tor-type`和`--tor-port`（例如`--tor-type = SOCKS5 - tor-port 9050`）。
 
-强烈建议您不经常地使用`--check-tor'来确保一切都正确设置。有些情况下，Tor捆绑（例如Vidalia）配置错误（或重置先前设置的配置），从而使您具有虚假的匿名感。在任何目标请求之前，使用此开关sqlmap将检查一切是否按预期发送单个请求到官方[您正在使用Tor？](https://check.torproject.org/)页面。如果检查失败，sqlmap将警告您并突然退出。
+强烈建议你时不时使用`--check-tor'来确保一切都正确设置。有些情况下，Tor包（例如Vidalia）配置错误（或重置先前的配置），会使你误以为已经成功匿名。使用此开关，sqlmap会在向任何目标请求之前发送单个请求到[你正在使用Tor？](https://check.torproject.org/)官方页面页面。如果检查失败，sqlmap将警告你并直接退出。
 
-### 每个HTTP请求的时间间隔
+### 每个HTTP请求间的延迟
 
-Option: `--delay`
+选先锋: `--delay`
 
-可以指定每个HTTP(S)请求的时间间隔秒数。有效值为浮点数，例如`0.5`表示半秒。默认情况下不设置延迟。
+可以指定每个HTTP(S)请求的时间间隔秒数。有效值为一个浮点数，例如`0.5`表示半秒。默认不设置延迟。
 
-### 超时等待秒数
+### 超时连接等待秒数
 
-Option: `--timeout`
+选项: `--timeout`
 
-可以指定HTTP(S)的超时等待秒数。有效值是浮点数，例如10.5表示10秒半。默认情况下设置为**30秒**。
+可以指定HTTP(S)的超时等待秒数。有效值是一个浮点数，例如10.5表示10秒半。默认值为**30秒**。
 
-### HTTP连接超时时的最大重试次数
+### HTTP连接超时最大重试次数
 
-Option: `--retries`
+选项: `--retries`
 
-当HTTP(S)连接超时时，可以指定最大重试次数。 默认情况下，这个值最多为**3次**。
+可以指定HTTP(S)连接超时时的最大重试次数。 默认最多重试**3次**。
 
 ### 随机更改给定参数的值
 
-Option: `--randomize`
+选项: `--randomize`
 
-你可以指定每个请求中需要被随机修改值的参数的名称。长度和类型仍为所提供的原始值。
+可以指定每个请求期间需要被随机修改值的参数名称。长度和类型仍为所提供的原始值。
 
-### 使用正则表达式过滤提供的代理日志中的目标
+### 使用正则表达式从指定代理日志中过滤目标
 
-Option: `--scope`
+选相关: `--scope`
 
-你可以指定用于过滤的Python正则表达式，而不用在日志中一律通过option`-l`解析的主机。
+你可以指定用于过滤目标的Python正则表达式，而不用在日志中通过选项`-l`解析所有主机。
 
 正确的语法示例：
 
