@@ -430,7 +430,7 @@ $ python sqlmap.py -u "http://www.target.com/vuln.php" --data="query=foobar;id=\
 
 ### HTTP `User-Agent`头
 
-选项及开关: `--user-agent`和`--random-agent`
+选项与开关: `--user-agent`和`--random-agent`
 
 默认情况下,sqlmap使用以下`User-Agent`头值执行HTTP请求：
 
@@ -448,29 +448,29 @@ $ python sqlmap.py -u "http://www.target.com/vuln.php" --data="query=foobar;id=\
 请注意,如果`--level`设置为** 3 **或更高版本,那么HTTP`User-Agent`标头也将针对SQL注入进行测试。
 详情请看下面。
 
-### HTTP `Host`头
+### HTTP `Host`请求头
 
 选项: `--host`
 
-你可以自己设置HTTP `Host`头的值。默认情况下，HTTP `Host`头是由目标URL解析而来的。
+你可以自己手动设置HTTP `Host`请求头的值。默认情况下，HTTP `Host`请求头是由目标URL解析而来的。
 
-请注意，如果`--level'设置为**5**，那么HTTP`Host`标头也将针对SQL注入进行测试。详情请看下面。
+请注意，如果`--level'设置为**5**或以上，sqlmap会针对HTTP`Host`请求头进行SQL注入测试。详情请看下文。
 
-### HTTP `Referer`头
+### HTTP `Referer`请求头
 
-Option: `--referer`
+选项: `--referer`
 
-可以伪造HTTP`Referer`头值。 默认情况下，如果未明确设置HTTP请求，则在HTTP请求中发送**非**HTTP`Referer头`。
+支持伪造HTTP`Referer`请求头值。 默认情况下，如果未明确设置，则不会在HTTP请求中发送HTTP`Referer请求头`。
 
-请注意，如果`--level`设置为**3**或更高版本，那么HTTP`Referer`标头也将针对SQL注入进行测试。 详情请看下面。
+请注意，如果`--level`设置为**3**或更高，sqlmap会针对HTTP`Referer`请求头进行SQL注入测试。详情请看下文。
 
-### 其余HTTP头
+### 额外的HTTP请求头
 
-Option: `--headers`
+选线: `--headers`
 
-可以通过设置“--headers”选项来提供额外的HTTP头。 每个标题必须用换行符分隔，并且从配置INI文件中更容易地提供它们。 你可以看一下这个例子的`sqlmap.conf`文件。
+可以通过设置`--headers`选项来提供额外的HTTP请求头。 每个请求头必须用换行符分隔，更佳的方式是直接从配置INI文件中读取。 你可以看一下`sqlmap.conf`文件中的例子。
 
-示例（对一个MySQL目标的运行结果）：
+对MySQL目标的运行示例：
 
 ```
 $ python sqlmap.py -u "http://192.168.21.128/sqlmap/mysql/get_int.php?id=1" -z \
