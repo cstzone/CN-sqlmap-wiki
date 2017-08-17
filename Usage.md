@@ -602,44 +602,44 @@ $ python sqlmap.py -u "http://192.168.136.131/sqlmap/mysql/basic/get_int.php?id\
 $ python sqlmap.py -l burp.log --scope="(www)?\.target\.(com|net|org)"
 ```
 
-### 避免你的会话在过多不成功的请求后被销毁
+### 避免会话在过多失败请求后被销毁
 
-Options: `--safe-url`, `--safe-post`, `--safe-req` and `--safe-freq`
+选项: `--safe-url`, `--safe-post`, `--safe-req` and `--safe-freq`
 
-有时，web应用程序或者检查测试技术会在一定量的不成功请求被执行后，销毁会话。这可能发生在sqlmap的检测阶段或者使用任何类型的SQL盲注过程中。原因是此时SQL payload不返回输出，并向应用程序会话管理系统或者检查测试发送信号。
+有时，web应用程序或者检测技术会在一定量失败请求被执行后，销毁相关会话。这可能发生在sqlmap的检测阶段或者利用任何SQL盲注过程中。原因是此时SQL payload不一定返回输出，可能因此向应用会话管理或检测技术暴露特征。
 
-为了绕过目标设定的这些限制，你可以使用以下任意（或者几种结合）的命令：
+为了绕过目标站点设定的这些限制，你可以使用以下任意（或者几种组合）选项：
 
-* `--safe-url`: 在测试中定时访问安全、正确的URL。
-* `--safe-post`: 设置正确的HTTP POST data发送给给定的安全的URL。
+* `--safe-url`: 在测试中频繁访问的URL地址。
+* `--safe-post`: 设置发送给给定安全URL的HTTP POST数据。
 * `--safe-req`: 从文件中加载并使用安全的HTTP请求。
-* `--safe-freq`: 在两次访问给定安全URL之间测试请求。
+* `--safe-freq`: 测试向给定安全地址两次访问的请求。
 
-这样，sqlmap就可以在不对URL执行注入的情况下访问预先设定的数量的_安全_的URL。
+这样，sqlmap将在不对URL执行注入的情况下，访问每一个预定数量请求的安全URL。
 
 ### 不对参数值进行URL编码
 
-Switch: `--skip-urlencode`
+开关: `--skip-urlencode`
 
-根据参数的位置（例如，GET），参数会默认进行URL编码。在某些情况下，后端的web服务器不遵循RFC标准，需要参数以未编码的形式发送。在这些情况下，使用`--skip-urlencode`。
+根据参数的位置（例如，GET），会默认对其值进行URL编码。在某些情况下，后端的Web服务器不遵循RFC标准，并要求以未编码的形式发送参数值。在这些情况下可以使用`--skip-urlencode`。
 
-# 绕过anti-CSRF保护
+# 绕过反CSRF保护
 
 选项: `--csrf-token`和`--csrf-url`
 
-许多网站以标记的形式吸收 anti-CSRF 保护, 隐藏字段值随机设置在每个页面响应. sqlmap 将会自动尝试去识别和绕过这样的保护, 但是有些选项 `--csrf-token` 和 `--csrf-url` 可以被用来进一步微调. 选项 `--csrf-token` 可以被用来设置隐藏数值的名称包含随机的标记. 这在网页使用非标准名称的情况下是有用的. 选项 `--csrf-url` 可用于从任意的URL地址中检索标记值. 这是有用的如果脆弱的目标 URL 在初始位置不包含必要的标记值,但是它需要从一些其他的位置提取出来.
+许多站点通过token进行反CSRF保护, 在每个页面的响应中随机设置隐藏字段值。 sqlmap 会自动尝试识别并绕过次着这种保护, 另外支持 `--csrf-token` 和 `--csrf-url`选项来进一步微调. 选项 `--csrf-token` 用来设置包含随机token的隐藏字段名称。这对于使用非标准名称的网页是极其有用的。选项 `--csrf-url` 用于从任意URL地址中获取token。如果目标站点在初始位置不包含必要token,而是需要从其他的位置提取，那么这个选项的用途就体现出来了。
 
 ### SSL/HTTPS的强力使用
 
 开关: `--force-ssl`
 
-如果用户希望强制使用 SSL/HTTPS 的请求指向目标, 它可以使用这个转换. 当urls被通过使用 option `--crawl`收集时或者当Burp log被提供 option `-l`时，这将会是有用的.
+如果用户希望针对目标强制使用 SSL/HTTPS 请求, 可以使用这个开关。 当通过使用选项`--crawl`收集urls或者使用选项`-l`提供Burp日志时，这个开关是很有用过的。
 
-### 在每个请求中评估定制的python代码
+### 在每个请求期间运行自定义python代码
 
 选项: `--eval`
 
-如果用户想要改变（或添加新的）参数值, 很大可能是因为一些已知的依赖关系, 他可以给sqlmap提供一个定制的有着 `--eval` 的可以在每个请求之前进行评估的python码.
+如果用户想要改变（或添加新的）参数值, 很大可能是因为一些已知的依赖关系, 他可以通过 `--eval` 选项给sqlmap提供一个自定义的python代码，在每个请求之前运行这段代码。
 
 例如:
 
@@ -648,88 +648,86 @@ $ python sqlmap.py -u "http://www.target.com/vuln.php?id=1&hash=c4ca4238a0b9238\
 20dcc509a6f75849b" --eval="import hashlib;hash=hashlib.md5(id).hexdigest()"
 ```
 
-这些运行的每个请求都将重新评估 GET 参数 `hash`的值以包含一个初始的 MD5 散列摘要来求得当前参数值为 `id`.
+运行的每个请求都将会使用当前 GET 请求中的 id 参数值重新计算出对应的 MD5 哈希值，从而替换掉原来的 hash 参数值。
 
-## 最优化
+## 优化
 
-这些交换机可以用来优化sqlmap的性能.
+这些开关可以用来优化sqlmap的性能。
 
-### 组团最优化
+### 批量优化
 
 开关: `-o`
 
-这个转换是一个别名，含蓄地设置下列选项和开关:
+这个开关作为别名，隐含地开启下列对应的选项和开关:
 
 * `--keep-alive`
 * `--null-connection`
-* `--threads=3` 如果没有设置一个更高的值.
+* `--threads=3` 默认值。
 
+下文将介绍更多关于开关设置的详情。
 
-阅读下列每个转换的细节.
-
-### 输出预报
+### 输出预测
 
 开关: `--predict-output`
 
-这个转换被用于推理算法，用于被检索字符的连续统计预测价值. 统计表最具有前景的特性价值是构建基于 `txt/common-outputs.txt` 的项目，结合现阶段使用的枚举知识. 如果在这些普通的输出值中可以找到价值，随着进程发展, 随后的字符表会越来越窄. 如果用于结合检索寻常的DBMS实体，如系统表名和权限，加速是显著的. 当然，你可以根据你的需求编辑普通的输出文件，例如，如果你注意到数据库表名称或类似的常见模式.
+这个转换被用于推理算法，可对获取的数据特性进行线性数据分析预测。根据 txt/common-outputs.txt 里面的条目及集合论相关知识预测并给出可能性最高的字符数理统计表。如果目标字符值可以在最常见的输出结果中找到，那么接下来的字符数理统计表范围会逐渐缩小。配合从 DBMS 中获取的实例，如同表名与权限，那么加速效果会显著提高。当然，你可以根据自身需求对常见的输出文件进行编辑，例如，你发现了数据库表名的常见模式或者其他的模式。
 
-注意这个转换与 `--threads` 转换不兼容.
+注意这个转换与 `--threads` 开关不兼容.
 
-### HTTP 持久连接
+### HTTP持久连接
 
 开关: `--keep-alive`
 
-这个转换命令sqlmap 使用持久的 HTTP(s) 连接.
+这个开关设定sqlmap 使用 HTTP(s)持久连接.
 
-注意这个转换与 `--proxy` 转换不兼容.
+注意这个开关与 `--proxy` 开关不兼容.
 
 ### HTTP空连接
 
 开关: `--null-connection`
 
-有特殊的HTTP请求类型，可用于检索HTTP响应的大小而不用取得HTTP的身体. 这一技术可以运用于盲注技术的区分‘真’与‘假’的回应. 当这一转换被提供时, sqlmap 将会尝试测试和利用两个不同的 _NULL connection_ techniques: `Range` and `HEAD`. 如果它们中任一个被目标网站服务器支持, 明显的节省使用带宽将会使速度提升.
+有特殊的HTTP请求类型，可用于获取HTTP响应的大小而不用取得HTTP实体. 这一技术可以运用于盲注技术来区分`True`与`False `。 如果申明了这一开关, sqlmap 将会尝试测试和利用两个不同的空连接技术： `Range` and `HEAD`。如果目标网站服务器支持它们中任何一个, 那将能够减小使用的带宽，加速整个测试过程。
 
-这些技术在白皮书中很详细 [Bursting Performances in Blind SQL Injection - Take 2 (Bandwidth)](http://www.wisec.it/sectou.php?id=472f952d79293).
+这些技术的详情可见白皮书 [Bursting Performances in Blind SQL Injection - Take 2 (Bandwidth)](http://www.wisec.it/sectou.php?id=472f952d79293).
 
-注意这个转换与 `--text-only`转换不兼容.
+注意这个转换与 `--text-only`开关不兼容.
 
 ### 并发HTTP(S)请求
 
 选项: `--threads`
 
-可以指定 sqlmap 被允许的最大并发 HTTP(S) 请求数
-这一特性依赖于 [multi-threading](http://en.wikipedia.org/wiki/Multithreading) 概念并且继承了它的优缺点.
+可以设定sqlmap被允许的最大并发 HTTP(S) 请求数。这一特性依赖于 [多线程](http://en.wikipedia.org/wiki/Multithreading) 概念，并且继承了它的优缺点.
 
-这一特性适用于brute-force选项并且当数据获取通过任何盲溶胶注入技术完成时. 对于后一种情况,sqlmap首先计算出在单线程序中搜索请求输出的长度, 然后开始多线程序.每个线程都被分配来检索查询输出的一个字符. 当这个字符被检索时，这个线程结束-它在sqlmap中通过执行二分法占据了7个HTTP(S)请求.
+当数据是通过SQL盲注技术获取，或者使用暴力破解开关获取时，可以运用这个特性。对于后一种情况,sqlmap首先计算出在单线程中计算出请求查询目标的长度, 然后开始多线程。每个线程都被分配（获取）查询的一个字符。 当这个字符被获取后，线程会结束并退出——基于 sqlmap中实现的折半算法，每个线程最多发起7次 HTTP(S) 请求。
 
-由于性能和站点可靠性的原因，并发请求的最大值设置为**10**.
+考虑到运行性能和站点可靠性，sqlmap并发请求数的最大值为**10**.
 
-注意到这一选项与 `--predict-output`转换不兼容.
+注意到这一选项与 `--predict-output`开关不兼容.
 
-## 诸如
+## 注入
 
-这些选项可以被用来指定测试哪个参数, 提供自定义注入有效载荷和可选的篡改脚本.
+以下选项用来指定测试的参数, 提供自定义注入payload和可选的篡改脚本.
 
 ### 可测试的参数
 选项: `-p`, `--skip`和 `--param-exclude`
 
-在默认情况下，sqlmap测试都获得了参数和POST参数. 当`--level`的值是>= **2** 它还测试了头值HTTP `Cookie`头值. 当这个值>= **3**它还测试了HTTP用户代理和HTTP Referer头部值的SQL注入. 您可以手动指定您希望sqlmap进行测试的一个由逗号分隔的参数列表. 这也会绕过对`--level的依赖`. 
+在默认情况下，sqlmap会测试所有的参数(包括GET和POST)。 当`--level`的值>= **2**，它会增加测试HTTP `Cookie`头部值. 当这个值>= **3**，它会增加测试了`HTTPUser-Agent`和`HTTP Referer`头部值。 你可以手动指定希望sqlmap进行测试的参数列表（使用逗号分隔）。这使得sqlmap忽视`--level`的指定。
 
-例如, 为了测试GET参数 `id`和只为了HTTP `User-Agent`,提供 `-p "id,user-agent"`.
+例如,`-p "id,user-agent"，表示只`测试GET参数 `id`和HTTP `User-Agent`。
 
-如果用户想要从测试中排除某些参数, 他可以使用选项`--skip`. 当您想要使用更高的`--level`并且测试所有可用的参数不包括通常被测试的HTTP头信息时，——跳过这一点特别有用.
+如果用户想要从测试中排除某些参数, 他可以使用选项`--skip`。当你想要使用更高的`--level`并且测试部分可用的参数（不包括通常被测试的HTTP头）时，这一选项特别有用.
 
-例如, 为了在`--level=5`跳过HTTP头`User-Agent`和`Referer`的测试, 提供 `--skip="user-agent,referer"`.
+例如, 能在`--level=5`申明的情况下，给出`--skip="user-agent,referer"`，能跳过测试`User-Agent`和`Referer`头。
 
-也有一种可能将某些参数排除在基于一个运行在他们名字之上的正常表达的测试中.在这些情况下，用户可以使用选项`--param-exclude`.
+还可以针对参数名称基于正则表达式来排除对某些参数的测试。在此种情况下，用户可以使用`--param-exclude`选项。
 
-例如, 要跳过在他们名字中包含字符串`token`或`session`的参数测试,需要提供`--param-exclude="token|session"`.
+例如, `--param-exclude="token|session"`表示跳过测试名称中包含`token`或`session`的参数。
 
-#### URI注入项目
+#### URI注入点
 
-当注入点在URI本身之中会有些特殊的情况. sqlmap 不会对URI路径执行任何自动测试,除非手动指向. 你必须在命令行中通过追加一个星号(`*`) (注意:也支持 Havij风格的`%INJECT HERE%`)在每个URI点之后，你需要sqlmap来测试和利用SQL注入. 
+当注入点在URI本身内会有些特殊的情况。除非手动指定,sqlmap不会对URI路径执行任何自动测试。你需要在每个需要测试和利用的URI点之后追加一个星号(`*`) (注意:也支持 Havij风格的`%INJECT HERE%`)，来在命令行中注明。
 
-这在某些情况下格外有用,例如, Apache网站[mod_rewrite](http://httpd.apache.org/docs/current/mod/mod_rewrite.html)模块的使用或其他类似的技术.
+例如, 使用Apache网站[mod_rewrite](http://httpd.apache.org/docs/current/mod/mod_rewrite.html)模块或其他类似的技术是，这就特别有用。
 
 一个有效的命令行示例是:
 
