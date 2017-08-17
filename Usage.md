@@ -735,22 +735,22 @@ $ python sqlmap.py -u "http://www.target.com/vuln.php?id=1&hash=c4ca4238a0b9238\
 $ python sqlmap.py -u "http://targeturl/param1/value1*/param2/value2/"
 ```
 
-#### 任意的注入点
+#### 任意注入点
 
-类似于URI注入点，星号()(注意:Havij格式%的注入%也被支持)也可以用于指向GET、POST或HTTP头部中的任意注入点。
-注入点可以通过在GET参数值(s)中指定，提供选项-u，POST参数值(s)提供选项-数据，HTTP头值(s)提供选项-H，-header，-用户代理，-引用和/或-cookie，或者是在HTTP请求中从文件中加载-r的通用位置。.
+类似于URI注入点，星号(*)(注意:Havij格式也被支持)也可以用于指向GET、POST或HTTP头部中的任意注入点。
+可以在选项`-u`中标注 GET 的参数值，在选项`--data`中标注 POST 的参数值，在选项`-H`中标注 HTTP 头部值如`--headers`、`--user-agent`、`--referer` 和/或者`--cookie`,或者是从文件加载HTTP请求（通过`-r`选项）中的通用位置。
 
-一个有效的命令行示例是:
+一个有效的命令行示例:
 
 ```
 $ python sqlmap.py -u "http://targeturl" --cookie="param1=value1*;param2=value2"
 ```
 
-### Force the DBMS
+### 指定DBMS类型
 
 选项: `--dbms`
 
-默认情况下,sqlmap自动检测web应用程序的后端数据库管理系统.Sqlmap完全支持以下数据库管理系统: 
+默认情况下,sqlmap自动检测Web应用程序的后端数据库管理系统。Sqlmap完全支持以下数据库管理系统: 
 
 * MySQL
 * Oracle
@@ -765,13 +765,13 @@ $ python sqlmap.py -u "http://targeturl" --cookie="param1=value1*;param2=value2"
 * HSQLDB
 * Informix
 
-如果因为任何原因sqlmap未能探测到DBMS后端,一旦SQL注入点被识别或者你想要避免一个有效的指纹,你可以提供DBMS自己的后端名称（e.g. `postgresql`）.对于MySQL 和Microsoft SQL Server,分别给他们提供`MySQL  <version>` and `Microsoft SQL Server  <version> `的形式,在这里` <version>`对于DBMS来说是一个有效的版本; 例如 MySQL和2005年微软SQL Server 5.0.
+如果因为某些原因sqlmap未能探测到后盾DBMS类型,或者你想要避免一个进行指纹信息收集,你可以提供DBMS名称（e.g. `postgresql`）。对于MySQL和Microsoft SQL Server,分别以`MySQL  <version>` and `Microsoft SQL Server  <version> `的形式指明,其中` <version>`是指DBMS的有效版本; 例如 MySQL的5.0和Microsoft SQL Server 的2005。
 
-如果你提供`--fingerprint` 和 `--dbms`,sqlmap只会执行广泛的仅为指定的数据库管理系统的指纹,详情请阅读下面的内容. 
+如果你使用`--fingerprint` 和 `--dbms`,sqlmap将只对指定的DBMS执行详细的指纹收集，更详细的信息请阅读下文。
 
-请注意这个选项不是强制性的并且强烈建议只有当你绝对确定后端数据库管理系统时才使用它.如果你不知道它,让sqlmap自动为你以指纹印记.
+请注意，该选项不是强制性的，并且强烈建议只有当绝对确定DBMS时才使用它。如果你不知道,就让sqlmap自动为你识别指纹信息。
 
-### 强制数据库管理系统的操作系统名称
+### 指定DBMS操作系统
 
 选项: `--os`
 
